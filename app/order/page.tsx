@@ -93,7 +93,7 @@ function OrderContent() {
           {step === 1 && <Step1Product state={state} update={update} onNext={() => setStep(2)} />}
           {step === 2 && <Step2Upload state={state} update={update} onNext={() => setStep(3)} onBack={() => setStep(1)} />}
           {step === 3 && <Step3Lead state={state} update={update} onNext={() => setStep(4)} onBack={() => setStep(2)} />}
-          {step === 4 && <Step4Summary state={state} update={update} onConfirmed={() => {}} />}
+          {step === 4 && <Step4Summary state={state} update={update} onBack={() => setStep(3)} onConfirmed={() => {}} />}
         </div>
       </div>
     </main>
