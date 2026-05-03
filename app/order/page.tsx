@@ -6,7 +6,8 @@ import Step1Product from "@/components/order/Step1Product";
 import Step2Upload from "@/components/order/Step2Upload";
 import Step3Lead from "@/components/order/Step3Lead";
 import Step4Summary from "@/components/order/Step4Summary";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, LogIn, ShieldCheck } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface OrderState {
   productId: string;
@@ -46,6 +47,8 @@ function OrderContent() {
     address: {}
   });
 
+  const { user, loading: authLoading, signInWithGoogle } = useAuth();
+
   // Handle back button behavior
   useEffect(() => {
     const handlePopState = () => {
@@ -60,6 +63,47 @@ function OrderContent() {
   }, [step]);
 
   const update = (patch: Partial<OrderState>) => setState(prev => ({ ...prev, ...patch }));
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#0c0c0c] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-cherry-light border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="min-h-screen bg-[#0c0c0c] text-white flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-[#111] border border-white/5 rounded-[3rem] p-12 text-center space-y-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-cherry-light/5 blur-[50px] -mr-16 -mt-16" />
+          
+          <div className="w-20 h-20 bg-cherry-light/10 border border-cherry-light/20 rounded-full flex items-center justify-center mx-auto text-cherry-light">
+            <ShieldCheck size={40} />
+          </div>
+          
+          <div className="space-y-4">
+            <h1 className="text-3xl font-serif font-black tracking-tight">Identity <span className="text-cherry-light">Required</span></h1>
+            <p className="text-white/40 text-sm leading-relaxed">
+              To ensure your memories are stored securely in your private cloud, please sign in before starting your photobook.
+            </p>
+          </div>
+
+          <button 
+            onClick={signInWithGoogle}
+            className="w-full h-16 bg-white text-black rounded-2xl font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-3 hover:bg-white/90 transition-all shadow-xl active:scale-95"
+          >
+            <LogIn size={18} />
+            Sign in with Google
+          </button>
+
+          <div className="pt-4 border-t border-white/5">
+             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">BerryBooks Secure Protocol</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#0c0c0c] text-white pt-24 pb-20">
